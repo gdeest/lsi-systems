@@ -19,7 +19,7 @@ import qualified LSI.RationalFunction as RF
 
 -- | Computes a map associating each node in the graph to its transfer function to the output.
 
-transferFunctions :: (KnownNat d, Ord i, Num c, Show c)
+transferFunctions :: (KnownNat d, Ord i, Num c)
                   => SystemGraph d i c -> IM.IntMap (RationalFunction d c)
 
 transferFunctions (Graph nodes root) = computeTFs S.empty root
@@ -40,8 +40,8 @@ transferFunctions (Graph nodes root) = computeTFs S.empty root
                                  else computeTFs baseNodes' nodeId'
                 baseNodes' = S.insert nodeId baseNodes
 
-        -- Given a map of transfer functions to a node remove the current node
-        -- from the map by dividing every other transfer function by (1-TF).
+                -- Given a map of transfer functions to a node remove the current node
+                -- from the map by dividing every other transfer function by (1-TF).
                 solveForSelf tfMap = case IM.lookup nodeId tfMap of
                   Just tf -> let denom = RF.Add RF.one (RF.Mul (RF.constant (-1)) tf) in
                                IM.map (flip RF.Div denom) (IM.delete nodeId tfMap)
