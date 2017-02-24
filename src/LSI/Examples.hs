@@ -3,6 +3,13 @@ module LSI.Examples where
 
 import LSI
 
+-- Simple Mul
+
+mul :: System 1 String Float
+mul = y
+  where x = input "x"
+        y = 0.5 *: x @: (-1)
+
 -- FIR (non-recursive) one-dimensional filter.
 fir :: System 1 String Float
 fir = y
