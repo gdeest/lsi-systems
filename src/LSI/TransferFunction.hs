@@ -6,19 +6,15 @@ module LSI.TransferFunction where
 import LSI.RationalFunction (RationalFunction)
 import LSI.System
 
-import Debug.Trace
+import Data.Reify (Graph(..))
 
-import Data.Reify
-import Data.Function.Memoize
 import GHC.TypeLits
 
 import qualified Data.IntMap as IM
-import qualified Data.Map as M
 import qualified Data.Set as S
 import qualified LSI.RationalFunction as RF
 
 -- | Computes a map associating each node in the graph to its transfer function to the output.
-
 transferFunctions :: (KnownNat d, Ord i, Num c)
                   => SystemGraph d i c -> IM.IntMap (RationalFunction d c)
 
@@ -36,7 +32,7 @@ transferFunctions (Graph nodes root) = computeTFs S.empty root
                              IM.map (RF.Mul $ RF.Monomial 1 d) tfs
 
           where getTFs nodeId' = if nodeId' `S.member` baseNodes'
-                                 then traceShow baseNodes' $ IM.fromList [(nodeId', RF.one)]
+                                 then IM.fromList [(nodeId', RF.one)]
                                  else computeTFs baseNodes' nodeId'
                 baseNodes' = S.insert nodeId baseNodes
 
