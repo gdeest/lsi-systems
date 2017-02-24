@@ -49,11 +49,11 @@ want to analyze the impact of roundoff noise on the output. Transfer functions
 are expressed as (unsimplified) rational functions of multivariate Laurent
 polynomials.
 
-For example, noting that the input node is given the label 5 in the above
-section, we can get its transfer function to the output:
+For example, noting that the input node `x` is given the label 5 we can get its
+transfer function to the output this way:
 
 ```haskell
-> import qualifie Data.IntMap as IM
+> import qualified Data.IntMap as IM
 > (transferFunctions g) IM.! 5
 Div (Add (Add (Monomial 1.0 (V {toVector = [0]})) (Mul (Monomial 0.5 (V {toVector = [0]})) (Mul (Monomial 1.0 (V {toVector = [-1]})) (Monomial 1.0 (V {toVector = [0]}))))) (Mul (Monomial 0.3 (V {toVector = [0]})) (Mul (Monomial 1.0 (V {toVector = [-2]})) (Monomial 1.0 (V {toVector = [0]}))))) (Add (Monomial 1.0 (V {toVector = [0]})) (Mul (Monomial (-1.0) (V {toVector = [0]})) (Add (Mul (Monomial (-1.0) (V {toVector = [0]})) (Mul (Monomial 1.0 (V {toVector = [-1]})) (Monomial 1.0 (V {toVector = [0]})))) (Mul (Monomial 0.123 (V {toVector = [0]})) (Mul (Monomial 1.0 (V {toVector = [-2]})) (Monomial 1.0 (V {toVector = [0]})))))))
 ```
