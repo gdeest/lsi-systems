@@ -3,7 +3,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
-module LSI.RationalFunction where
+module LSI.RationalFunction ( RationalFunction(..)
+                            , constant
+                            , one
+                            , zero
+                            , simplify
+                            , toMatlabFunction
+                            )where
 
 
 import GHC.TypeLits
@@ -11,6 +17,7 @@ import Linear.V
 import Data.List (intersperse)
 import Data.Vector (fromList)
 
+import Data.Maybe (catMaybes)
 import Data.Proxy
 import Data.Text (Text)
 import Debug.Trace
@@ -133,39 +140,47 @@ polyAdd p1 p2 = case (p1, p2) of
 
   (Add m rst, _) -> polyAdd m (polyAdd rst p2)
 
--- Ugly-print the rational function as a Matlab / Octave anonymous function.
+data PPLevel = PPAdd | PPMul | PPNum | PPDen
+
+-- | Pretty-print the rational function as a Matlab / Octave anonymous function.
 toMatlabFunction :: forall d c. (KnownNat d, Ord c, Num c, Show c) => RationalFunction d c -> T.Text
-toMatlabFunction r = T.concat [ functionHead
-                              , " "
-                              , showBody r
-                              ]
+toMatlabFunction r = T.concat [ functionHead, " ", ppExpr PPAdd r ]
 
-  where functionHead = let d = natVal (Proxy :: Proxy d) in
-                         T.concat [ "@("
-                                  , T.concat .
-                                    intersperse "," .
-                                    map (\i -> T.concat ["z", T.pack (show i)]) $
-                                    [1..d]
-                                  , ")"
-                                  ]
+  where functionHead = T.concat ["@(", argList, ")"]
+          where argList = T.concat . intersperse "," . map showZ $ [1..d]
+                showZ i = T.concat ["z", T.pack (show i)]
+                d = natVal (Proxy :: Proxy d)
 
-        showBody r = case r of
-          Monomial c exps -> T.concat [ showConstant $ c
-                                      , ".*"
-                                      , T.concat .
-                                        intersperse ".*" .
-                                        map (\(i,v) -> T.concat ["z", T.pack . show $ i, ".^", showConstant v]) $
-                                        pairs
-                                      ]
-            where pairs = zip [1..] (V.toList . toVector $ exps)
+        ppExpr level r = case r of
+          Monomial c exps -> case level of
+            PPDen -> if length factors == 1 then str else protect str
+            _ -> str
+
+            where str = T.concat $ intersperse ".*" factors
+                  factors = (showConstant c):zFactors
                   showConstant d = let txt = T.pack (show d) in
                                 if d >= 0 then txt
                                 else T.concat ["(", txt, ")"]
-          Add r1 r2 -> wrap ".+" r1 r2
-          Mul r1 r2 -> wrap ".*" r1 r2
-          Div r1 r2 -> wrap "./" r1 r2
+                  zFactors = catMaybes $ map pairToProd pairs
+                  pairToProd (i,0) = Nothing
+                  pairToProd (i,e) = Just $
+                    T.concat ["z", T.pack (show i), ".^", showConstant e]
+                  pairs = zip [1..] (V.toList . toVector $ exps)
 
-        wrap operator r1 r2 = T.concat [ "(", showBody r1, ")"
-                                       , operator
-                                       , "(", showBody r2, ")"
-                                       ]
+          Add r1 r2 -> case level of
+            PPAdd -> str
+            _     -> protect str
+
+            where str = T.concat [ppExpr PPAdd r1, ".+", ppExpr PPAdd r2]
+
+          Mul r1 r2 -> case level of
+            PPDen -> protect str
+            _     -> str
+            where str = T.concat [ppExpr PPMul r1, ".*", ppExpr PPMul r2]
+
+          Div r1 r2 -> case level of
+            PPDen -> protect str
+            _     -> str
+            where str = T.concat [ppExpr PPNum r1, "./", ppExpr PPDen r2]
+
+        protect str = T.concat ["(", str, ")" ]
