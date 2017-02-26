@@ -3,12 +3,12 @@ module LSI.Examples where
 
 import LSI
 
--- Simple scaling of a signal: 
+-- Simple scaling of a signal:
 -- y(t) = 0.5 x(t)
 mul :: System 1 String Float
 mul = y
   where x = input "x"
-        y = 0.5 *: x @: (-1)
+        y = 0.5 *: x
 
 -- FIR (non-recursive) one-dimensional filter.
 fir :: System 1 String Float
@@ -72,7 +72,7 @@ deriche a1 a2 a3 a4 a5 a6 a7 a8 b1 b2 c1 c2 = theta2
       +: b2 *: y2 @: (0,2)
 
     y3 =
-         a5 *: theta1  @:(0,0)
+         a5 *: theta1
       +: a6 *: theta1  @:(-1,0)
       +: b1 *: y3      @:(-1,0)
       +: b2 *: y3      @:(-2,0)
@@ -84,12 +84,12 @@ deriche a1 a2 a3 a4 a5 a6 a7 a8 b1 b2 c1 c2 = theta2
       +: b2 *: y4      @:(2,0)
 
     theta1 =
-         c1 *: y1 @:(0,0)
-      +: c1 *: y2 @:(0,0)
+         c1 *: y1
+      +: c1 *: y2
 
     theta2 =
-         c2 *: y3 @:(0,0)
-      +: c2 *: y4 @:(0,0)
+         c2 *: y3
+      +: c2 *: y4
 
 
 deriche_ydiff :: Floating a => a -> System 2 String a

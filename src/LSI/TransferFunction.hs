@@ -6,6 +6,7 @@ module LSI.TransferFunction where
 import LSI.RationalFunction (RationalFunction)
 import LSI.System
 
+import Debug.Trace
 import Data.Reify (Graph(..))
 
 import GHC.TypeLits
@@ -15,7 +16,7 @@ import qualified Data.Set as S
 import qualified LSI.RationalFunction as RF
 
 -- | Computes a map associating each node in the graph to its transfer function to the output.
-transferFunctions :: (KnownNat d, Ord i, Num c)
+transferFunctions :: (KnownNat d, Ord i, Num c, Show c)
                   => SystemGraph d i c -> IM.IntMap (RationalFunction d c)
 
 transferFunctions (Graph nodes root) = computeTFs S.empty root
@@ -38,8 +39,8 @@ transferFunctions (Graph nodes root) = computeTFs S.empty root
 
                 -- Given a map of transfer functions to a node remove the current node
                 -- from the map by dividing every other transfer function by (1-TF).
-                solveForSelf tfMap = case IM.lookup nodeId tfMap of
-                  Just tf -> let denom = RF.Add RF.one (RF.Mul (RF.constant (-1)) tf) in
+                solveForSelf tfMap = case (traceShowId $ IM.lookup nodeId tfMap) of
+                  Just tf -> let denom = traceShowId $ RF.Add RF.one (RF.Mul (RF.constant (-1)) tf) in
                                IM.map (flip RF.Div denom) (IM.delete nodeId tfMap)
                   Nothing -> tfMap
 
