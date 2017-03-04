@@ -30,6 +30,25 @@ iir = y
           +: (-1)  *: y@:(-1)
           +: 0.123 *: y@:(-2)
 
+-- Second-order Chebyshev Type-1 Filter
+cheby1 :: System 1 String Double
+cheby1 = y
+  where x = input "x"
+        y =  0.94717   *: x
+          +: (-0.189434) *: x @:(-1)
+          +: (0.094717)  *: x @:(-2)
+          +: 0.53756     *: y @:(-1)
+          +: 0.0973565   *: y @:(-2)
+
+-- b =
+
+--    0.094717  -0.189434   0.094717
+
+-- a =
+
+--    1.00000   0.53756   0.73565
+
+
 -- 2D Sobel Filter (x-gradient computation)
 sobel_x :: System 2 String Float
 sobel_x = y

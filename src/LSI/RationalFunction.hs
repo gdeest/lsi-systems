@@ -49,12 +49,12 @@ isOne  = equals 1
 isZero = equals 0
 
 -- | Simplify a rational function to be either:
--- - A right-unbalanced polynomial. E.g.: Add(m1, Add(m2, Add (m3, m4)))
+-- - An polynomial, expressed as an additive list of monomials. E.g.: Add(m1, Add(m2, Add (m3, m4)))
 --   such that coefficients appear only once, in increasing lexicographic order.
--- - A division of such monomial sums.
+-- - A division of such polynomials.
 --
--- In case of a division of polynomials, no attempt is made to perform polynomial division.
-
+-- However, no attempt is made to simplify polynomial divisions.
+-- TODO: Use the computational-algebra package to do this ?
 simplify :: (KnownNat d, Eq c, Num c, Show c) => RationalFunction d c -> RationalFunction d c
 simplify rat = case rat of
   -- Base case. Return self.
@@ -115,7 +115,7 @@ polyMul p1 p2 = case p1 of
   Add m1 rst -> polyAdd (polyMul m1 p2) (polyMul rst p2)
 
 -- Naive polynomial addition.
-  --
+--
 -- Maintains the following invariant: polynomials are in normal form, ie., the
 -- exponents are increasing (lexicographic) order, each exponent appears only
 -- once in the list and there is no zero coefficient.

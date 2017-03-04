@@ -26,11 +26,8 @@ transferFunctions (Graph nodes root) = computeTFs S.empty root
               Add n1 n2 -> let (tfs1, tfs2) = (getTFs n1, getTFs n2) in
                              solveForSelf $ IM.unionWith RF.Add tfs1 tfs2
 
-              Mul c n   -> let tfs = getTFs n in
-                             IM.map (RF.Mul (RF.constant c)) tfs
-
-              Ref n d   -> let tfs = getTFs n in
-                             IM.map (RF.Mul $ RF.Monomial 1 d) tfs
+              Mul c n   -> IM.map (RF.Mul (RF.constant c)) (getTFs n)
+              Ref n d   -> IM.map (RF.Mul $ RF.Monomial 1 d) (getTFs n)
 
           where getTFs nodeId' = if nodeId' `S.member` baseNodes'
                                  then IM.fromList [(nodeId', RF.one)]
