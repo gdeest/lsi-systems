@@ -17,12 +17,14 @@ library
   hs-source-dirs:      src
   exposed-modules:     LSI
                      , LSI.Examples
+                     , LSI.Graph.Fgl
                      , LSI.RationalFunction
                      , LSI.System
                      , LSI.TransferFunction
   build-depends:       base >= 4.7 && < 5
                      , containers
                      , data-reify
+                     , fgl
                      , linear
                      , memoize
                      , text

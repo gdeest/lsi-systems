@@ -47,6 +47,9 @@ type family Vec (d :: Nat) :: *
 type instance Vec 1 = Int
 type instance Vec 2 = (Int, Int)
 type instance Vec 3 = (Int, Int, Int)
+type instance Vec 4 = (Int, Int, Int, Int)
+type instance Vec 5 = (Int, Int, Int, Int, Int)
+type instance Vec 6 = (Int, Int, Int, Int, Int, Int)
 
 data System' (d::Nat) i c a =
   Input i       |
