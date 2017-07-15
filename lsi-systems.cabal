@@ -18,6 +18,7 @@ library
   exposed-modules:     LSI
                      , LSI.Examples
                      , LSI.Graph.Fgl
+                     , LSI.Graph.Graphviz
                      , LSI.RationalFunction
                      , LSI.System
                      , LSI.TransferFunction
@@ -25,8 +26,9 @@ library
                      , containers
                      , data-reify
                      , fgl
+                     , graphviz
                      , linear
-                     , memoize
+                     -- , memoize
                      , text
                      , vector
   default-language:    Haskell2010
