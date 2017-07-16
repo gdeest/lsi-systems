@@ -17,8 +17,10 @@ library
   hs-source-dirs:      src
   exposed-modules:     LSI
                      , LSI.Examples
+                     , LSI.FrequencyResponse
                      , LSI.Graph.Fgl
                      , LSI.Graph.Graphviz
+                     , LSI.Grid
                      , LSI.RationalFunction
                      , LSI.System
                      , LSI.TransferFunction
@@ -28,7 +30,8 @@ library
                      , fgl
                      , graphviz
                      , linear
-                     -- , memoize
+                     , mtl
+                     , repa
                      , text
                      , vector
   default-language:    Haskell2010

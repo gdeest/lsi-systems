@@ -1,7 +1,10 @@
 {-# LANGUAGE DataKinds #-}
 module LSI.Examples where
 
+import qualified Data.IntMap as IM
 import LSI
+import LSI.FrequencyResponse
+import LSI.TransferFunction
 
 -- Simple scaling of a signal:
 -- y(t) = 0.5 x(t)
@@ -160,3 +163,7 @@ deriche_smooth alpha = deriche a1 a2 a3 a4 a5 a6 a7 a8 b1 b2 c1 c2
 
     c1 = 1
     c2 = 1
+
+dericheRF = computeFR tf
+  where tf = (transferFunctions g) IM.! 13
+        g = toGraph $ deriche_ydiff 1.0

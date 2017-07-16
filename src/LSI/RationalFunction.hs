@@ -20,7 +20,6 @@ import Data.Vector (fromList)
 import Data.Maybe (catMaybes)
 import Data.Proxy
 import Data.Text (Text)
-import Debug.Trace
 
 import qualified Data.Text as T
 import qualified Data.Vector as V

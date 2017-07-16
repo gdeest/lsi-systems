@@ -6,7 +6,6 @@ module LSI.TransferFunction where
 import LSI.RationalFunction (RationalFunction)
 import LSI.System
 
-import Debug.Trace
 import Data.Reify (Graph(..))
 
 import GHC.TypeLits
@@ -36,8 +35,8 @@ transferFunctions (Graph nodes root) = computeTFs S.empty root
 
                 -- Given a map of transfer functions to a node remove the current node
                 -- from the map by dividing every other transfer function by (1-TF).
-                solveForSelf tfMap = case (traceShowId $ IM.lookup nodeId tfMap) of
-                  Just tf -> let denom = traceShowId $ RF.Add RF.one (RF.Mul (RF.constant (-1)) tf) in
+                solveForSelf tfMap = case IM.lookup nodeId tfMap of
+                  Just tf -> let denom = RF.Add RF.one (RF.Mul (RF.constant (-1)) tf) in
                                IM.map (flip RF.Div denom) (IM.delete nodeId tfMap)
                   Nothing -> tfMap
 
