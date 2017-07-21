@@ -1,7 +1,8 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE KindSignatures #-}
 -- # LANGUAGE ExplicitForAll #
-module LSI.TransferFunction where
+module LSI.TransferFunction ( transferFunctions
+                            ) where
 
 import LSI.RationalFunction (RationalFunction)
 import LSI.System
